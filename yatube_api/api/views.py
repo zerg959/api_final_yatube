@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import permissions
 from .permissions import IsOwnerPermission
@@ -28,7 +28,16 @@ class ApiGroupViewSet(viewsets.ReadOnlyModelViewSet):
 class ApiFollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = ApiFollowSerializer
+    filter_backends = (filters.SearchFilter,)
     permission_classes = (permissions.IsAuthenticated,)
+    search_fields = ('user__username', 'following__username',)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        user = self.request.user
+        return Follow.objects.filter(user=user)
 
 
 class ApiCommentViewSet(viewsets.ModelViewSet):
@@ -45,21 +54,3 @@ class ApiCommentViewSet(viewsets.ModelViewSet):
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, id=post_id)
         serializer.save(author=self.request.user, post=post)
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerPermission)
-
-    # def perform_create(self, serializer):
-    #     serializer.save(author=self.request.user)
-    #
-    # def get_queryset(self):
-    #     queryset = Comment.objects.filter(post=self.kwargs.get('post_pk'))
-    #     return queryset
-    # def get_queryset(self):
-    #     get_object_or_404(Post, id=self.kwargs['post_id'])
-    #     post_id = self.kwargs['post_id']
-    #     return Comment.objects.filter(post__id=post_id)
-    #
-    # def perform_create(self, serializer):
-    #     serializer.validated_data['post'] = get_object_or_404(
-    #         Post, id=self.kwargs['post_id']
-    #     )
-    #     return super().perform_create(serializer)

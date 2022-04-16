@@ -79,6 +79,3 @@ class Follow(models.Model):
                 name='unique_follow'
             )
         ]
-
-    # def __str__(self):
-    #     return f'follower: {self.user}; following: {self.following}'
