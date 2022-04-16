@@ -3,8 +3,7 @@ from rest_framework import viewsets, filters
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import permissions
 from .permissions import IsOwnerPermission
-
-from posts.models import User, Post, Group, Comment, Follow
+from posts.models import Post, Group, Follow
 from .serializers import (ApiPostSerializer, ApiCommentSerializer,
                           ApiFollowSerializer, ApiGroupSerializer)
 
@@ -41,16 +40,20 @@ class ApiFollowViewSet(viewsets.ModelViewSet):
 
 
 class ApiCommentViewSet(viewsets.ModelViewSet):
+    """Comment viewset."""
+
     serializer_class = ApiCommentSerializer
     permission_classes = (IsOwnerPermission,)
 
     def get_queryset(self):
+        """Create comment queryset."""
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, id=post_id)
-        new_queryset = post.comments.all()
-        return new_queryset
+        queryset = post.comments.all()
+        return queryset
 
     def perform_create(self, serializer):
+        """Create new post comment."""
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, id=post_id)
         serializer.save(author=self.request.user, post=post)
