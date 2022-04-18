@@ -10,7 +10,6 @@ router.register('groups', views.ApiGroupViewSet, basename='groups')
 router.register(r'follow', views.ApiFollowViewSet, basename='follow')
 
 urlpatterns = [
-    path('v1/', include('djoser.urls')),
     path('v1/', include('djoser.urls.jwt')),
     path('v1/', include(router.urls)),
 ]

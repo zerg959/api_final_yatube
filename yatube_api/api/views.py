@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, mixins
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import permissions
 from .permissions import IsOwnerPermission
@@ -21,11 +21,12 @@ class ApiPostViewSet(viewsets.ModelViewSet):
 class ApiGroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = ApiGroupSerializer
-    permission_classes = (IsOwnerPermission,)
+    permission_classes = (permissions.AllowAny,)
 
 
-class ApiFollowViewSet(viewsets.ModelViewSet):
-    queryset = Follow.objects.all()
+class ApiFollowViewSet(viewsets.GenericViewSet,
+                       mixins.CreateModelMixin,
+                       mixins.ListModelMixin):
     serializer_class = ApiFollowSerializer
     filter_backends = (filters.SearchFilter,)
     permission_classes = (permissions.IsAuthenticated,)
