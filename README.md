@@ -50,9 +50,9 @@ python3 -m pip install --upgrade pip
 ```
 pip install -r requirements.txt
 ```
-установить и зарегистрировать в файле settings.py библиотеку djoser.</br>
-настроить urls.py
-при регистрации необходимо обратить внимание на то, что пакет djoser располагается после
+- Установить и зарегистрировать в файле settings.py библиотеку djoser.</br>
+- Настроить urls.py </br>
+- При регистрации необходимо обратить внимание на то, что пакет djoser располагается после
 django.contrib.auth и rest_framework
 
 ```
